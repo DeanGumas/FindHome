@@ -1,0 +1,221 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "FPS_Character.h"
+
+// Sets default values
+AFPS_Character::AFPS_Character()
+{
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	// Create a first person camera component
+	FPS_CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+
+	// Attach the camera component to our capsule component
+	FPS_CameraComponent->SetupAttachment(GetCapsuleComponent());
+
+	// Position the camera above eye level
+	FPS_CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
+
+	// Allow the pawn to control camera rotation
+	FPS_CameraComponent->bUsePawnControlRotation = true;
+
+	// Create a first person mesh component for the owning player.
+	FPSMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
+	// Only the owning player sees this mesh.
+	FPSMesh->SetOnlyOwnerSee(true);
+	// Attach the FPS mesh to the FPS camera.
+	FPSMesh->SetupAttachment(FPS_CameraComponent);
+	// Disable some environmental shadowing to preserve the illusion of having a single mesh.
+	FPSMesh->bCastDynamicShadow = false;
+	FPSMesh->CastShadow = false;
+
+	// The owning player doesn't see the regular (third-person) body mesh.
+	GetMesh()->SetOwnerNoSee(true);
+
+	// Set character state to standing
+	CharacterState = ECharState::Standing;
+}
+
+// Called when the game starts or when spawned
+void AFPS_Character::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+// Called every frame
+void AFPS_Character::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	FVector Velocity = GetVelocity();
+
+	if (Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::RightShot && CharacterState != ECharState::LeftShot)
+	{
+		CharacterState = ECharState::Standing;
+	}
+
+	if (!Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::Jump)
+	{
+		CharacterState = ECharState::Running;
+	}
+
+	if (CharacterState == ECharState::Jump && fabs(Velocity.Z) <= 0.05)
+	{
+		if (Peaked)
+		{
+			CharacterState = ECharState::Standing;
+			Peaked = false;
+		}
+		else
+		{
+			Peaked = true;
+		}
+	}
+
+	if (CharacterState == ECharState::JumpSquat)
+	{
+		SquatFrames++;
+		if (SquatFrames == 10)
+		{
+			CharacterState = ECharState::Jump;
+			bPressedJump = true;
+			SquatFrames = 0;
+		}
+	}
+
+	if (StillShooting)
+	{
+		ShootFrames++;
+		if (ShootFrames == ShootFrequency)
+		{
+			Shoot();
+			ShootFrames = 0;
+		}
+	}
+}
+
+// Called to bind functionality to input
+void AFPS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Set up movement bindings
+	PlayerInputComponent->BindAxis("MoveForward", this, &AFPS_Character::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AFPS_Character::MoveRight);
+
+	// Set up look bindings
+	PlayerInputComponent->BindAxis("Turn", this, &AFPS_Character::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AFPS_Character::AddControllerPitchInput);
+
+	// Set up action bindings
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AFPS_Character::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AFPS_Character::StopJump);
+
+	// Set up shooting bindings
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AFPS_Character::StartShooting);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AFPS_Character::StopShooting);
+}
+
+// Handle moving forward
+void AFPS_Character::MoveForward(float Value)
+{
+	// Find out which way is forward and record that the player wants to move in that direction
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	AddMovementInput(Direction, Value);
+}
+
+// Handle moving side to side
+void AFPS_Character::MoveRight(float Value)
+{
+	// Find out which was is right and record the player wants to move in that direction, scale to half speed of running forward
+	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y)/2;
+	AddMovementInput(Direction, Value);
+}
+
+// Handle jump start
+void AFPS_Character::StartJump()
+{
+	CharacterState = ECharState::JumpSquat;
+}
+
+// Handle jump released
+void AFPS_Character::StopJump()
+{
+	bPressedJump = false;
+}
+
+// Handle shooting basic projectile
+void AFPS_Character::Shoot()
+{
+	// Attempt to fire a projectile
+	if (ProjectileClass)
+	{
+		// Get the camera transform
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		// Decide if shooting with left or right gun
+		if (RightShot)
+		{
+			MuzzleOffset.Y = DualWieldOffset;
+			RightShot = false;
+			if (CharacterState == ECharState::Standing || CharacterState == ECharState::LeftShot)
+			{
+				CharacterState = ECharState::RightShot;
+			}
+		}
+		else
+		{
+			MuzzleOffset.Y = -DualWieldOffset;
+			RightShot = true;
+			if (CharacterState == ECharState::Standing || CharacterState == ECharState::RightShot)
+			{
+				CharacterState = ECharState::LeftShot;
+			}
+		}
+
+		// Transform MuzzleOffset from camera space to world space
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = CameraRotation;
+
+		// Skew the aim slightly upwards
+		MuzzleRotation.Pitch += 2.5f;
+
+		UWorld* World = GetWorld();
+
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+
+			// Spawn the projectile at the muzzle
+			ABasicProjectile* Projectile = World->SpawnActor<ABasicProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory
+				FVector LaunchDirection = MuzzleRotation.Vector();
+				Projectile->ShootInDirection(LaunchDirection);
+			}
+		}
+	}
+}
+
+void AFPS_Character::StartShooting()
+{
+	StillShooting = true;
+	ShootFrames = 0;
+	Shoot();
+}
+
+void AFPS_Character::StopShooting()
+{
+	if (CharacterState == ECharState::Shooting || CharacterState == ECharState::RightShot || CharacterState == ECharState::LeftShot)
+	{
+		CharacterState = ECharState::Standing;
+	}
+	StillShooting = false;
+	ShootFrames = 0;
+}
