@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "FPS_Character.h"
 #include "FPS_Project.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
@@ -17,6 +18,10 @@ class FPS_PROJECT_API AFPS_HUD : public AHUD
 	GENERATED_BODY()
 
 public:
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	// Primary draw function for the HUD
 	virtual void DrawHUD() override;
 
@@ -29,4 +34,7 @@ protected:
 	// Heart drawn at top left
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* HeartTexture;
+
+	// Reference to main character
+	AFPS_Character* Character;
 };

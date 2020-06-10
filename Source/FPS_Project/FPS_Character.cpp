@@ -182,7 +182,7 @@ void AFPS_Character::Shoot()
 		FRotator MuzzleRotation = CameraRotation;
 
 		// Skew the aim slightly upwards
-		MuzzleRotation.Pitch += 2.5f;
+		MuzzleRotation.Pitch += MuzzleAngle;
 
 		UWorld* World = GetWorld();
 
@@ -218,4 +218,9 @@ void AFPS_Character::StopShooting()
 	}
 	StillShooting = false;
 	ShootFrames = 0;
+}
+
+void AFPS_Character::Damage(uint8 Amount)
+{
+	Health -= Amount;
 }

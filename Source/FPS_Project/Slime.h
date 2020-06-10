@@ -51,16 +51,31 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	ESlimeState SlimeState;
 
+	// Number of frames to stay in jump squat
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 SquatLength;
+
+	// Number of frames to wait before jumping towards the player
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 WaitLength;
+
+	// Number of frames between damages to the player when within range
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 DamageLength;
+
 	// Damages slime by the amount specified
 	UFUNCTION()
 	void Damage(uint8 Amount);
+
+	// Makes slime jump
+	UFUNCTION()
+	void Jump();
 
 private:
 	// Dynamic material of the slime used to change its color
 	UMaterialInstanceDynamic* DynamicMaterial;
 
 	// Reference to the main character
-	FVector CharacterLocation;
 	AFPS_Character* Character;
 
 	// Health parameter
@@ -71,4 +86,16 @@ private:
 
 	// If the slime has been killed
 	bool Alive = true;
+
+	// Frames the slime has been in jump squat
+	uint8 SquatFrames = 0;
+
+	// Frames the slime has been waiting to move
+	uint8 WaitFrames = 0;
+
+	// Frames the slime has been waiting to damage the player
+	uint8 DamageFrames = DamageLength;
+
+	// Vector directed from the slime to the player character
+	FVector ToPlayer;
 };

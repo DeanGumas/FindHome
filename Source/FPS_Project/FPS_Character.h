@@ -73,9 +73,17 @@ public:
 	UFUNCTION()
 	void StopShooting();
 
+	// Function to damage the character by the specified amount
+	UFUNCTION()
+	void Damage(uint8 Amount);
+
 	// Launch location for projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
+
+	// Muzzle angle
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 MuzzleAngle;
 
 	// Launch offset of dual wielded guns
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -85,6 +93,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 ShootFrequency = 30;
 
+	// Character Health Value
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	uint8 Health = 3;
+
 	// Projectile class to spawn when shooting
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ABasicProjectile> ProjectileClass;
@@ -92,10 +104,6 @@ public:
 	// Character State enum
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	ECharState CharacterState;
-
-	// Character Health Value
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
-	uint8 Health = 3;
 
 	// FPS mesh visible only to player
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)

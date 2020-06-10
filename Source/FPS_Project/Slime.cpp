@@ -51,12 +51,82 @@ void ASlime::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Character)
+	// Get vector from slime to player character
+	ToPlayer = Character->GetActorLocation() - GetActorLocation(); 
+
+	if (SlimeState == ESlimeState::JumpSquat || SlimeState == ESlimeState::Jump)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Character->GetActorLocation().X));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%f, %f, %f"), ToPlayer.X, ToPlayer.Y, ToPlayer.Z));
 	}
 
-	if (!Alive)
+	// Determine new rotation based on player character location
+	FRotator NewRotation = GetActorRotation();
+	float Rotation = atan(ToPlayer.Y / ToPlayer.X) * 180 / PI;
+	// If the vector has a negative X component, add 180 to compensate for coordinate system
+	if (ToPlayer.X < 0)
+	{
+		Rotation += 180;
+	}
+	// Setting the new rotation
+	NewRotation.Yaw = Rotation;
+	SetActorRotation(NewRotation);
+
+	if (Alive)
+	{
+		// Switch on the slime's state
+		switch (SlimeState)
+		{
+		case ESlimeState::Stance:
+			// Check if the slime is close enough to "see" the player and jump towards them
+			if (fabs(ToPlayer.X) < 500 && fabs(ToPlayer.Y) < 500)
+			{
+				WaitFrames++;
+				// If the frames have exceeded the wait time, begin the jump squat
+				if (WaitFrames == WaitLength)
+				{
+					SlimeState = ESlimeState::JumpSquat;
+					WaitFrames = 0;
+				}
+			}
+			// Reset waiting counter when the player is out of range
+			else
+			{
+				WaitFrames = 0;
+			}
+			break;
+		case ESlimeState::Jump:
+
+			break;
+		case ESlimeState::JumpSquat:
+			SquatFrames++;
+			// Change to jumping state after the specified jump squat length
+			if (SquatFrames == SquatLength)
+			{
+				SlimeState = ESlimeState::Jump;
+				SquatFrames = 0;
+			}
+			break;
+		}
+
+		// Check if the slime is close enough to attack the player
+		if (fabs(ToPlayer.X) < 30 && fabs(ToPlayer.Y) < 30 && fabs(ToPlayer.Z) < 60)
+		{
+			// If there were enough frames between the last attack, damage the player again and reset the counter
+			if (DamageFrames == DamageLength)
+			{
+				Character->Damage(1);
+				DamageFrames = 0;
+			}
+			DamageFrames++;
+		}
+		// Reset damage counter when the player is no longer in range
+		else
+		{
+			DamageFrames = DamageLength;
+		}
+	}
+	// If dead, darken the material until black then destroy the slime
+	else
 	{
 		if (Brightness > 0)
 		{
@@ -78,5 +148,11 @@ void ASlime::Damage(uint8 Amount)
 	{
 		Alive = false;
 	}
+}
+
+// Function to make slime jump
+void ASlime::Jump()
+{
+
 }
 

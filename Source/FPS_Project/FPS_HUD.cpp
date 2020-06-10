@@ -3,6 +3,14 @@
 
 #include "FPS_HUD.h"
 
+void AFPS_HUD::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Get reference to player character
+	Character = Cast<AFPS_Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
+}
+
 void AFPS_HUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -26,17 +34,36 @@ void AFPS_HUD::DrawHUD()
 		Canvas->DrawItem(TileItem);
 
 		// Draw the hearts in the top left corner
-		FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
-		HeartItem1.BlendMode = SE_BLEND_Translucent;
-		Canvas->DrawItem(HeartItem1);
+		if (Character->Health == 3)
+		{
+			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+			HeartItem1.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem1);
 
-		FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
-		HeartItem2.BlendMode = SE_BLEND_Translucent;
-		Canvas->DrawItem(HeartItem2);
+			FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
+			HeartItem2.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem2);
 
-		FCanvasTileItem HeartItem3(HeartDrawPosition3, HeartTexture->Resource, FLinearColor::White);
-		HeartItem3.BlendMode = SE_BLEND_Translucent;
-		Canvas->DrawItem(HeartItem3);
+			FCanvasTileItem HeartItem3(HeartDrawPosition3, HeartTexture->Resource, FLinearColor::White);
+			HeartItem3.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem3);
+		}
+		else if (Character->Health == 2)
+		{
+			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+			HeartItem1.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem1);
+
+			FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
+			HeartItem2.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem2);
+		}
+		else if (Character->Health == 1)
+		{
+			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+			HeartItem1.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(HeartItem1);
+		}
 	}
 }
 
