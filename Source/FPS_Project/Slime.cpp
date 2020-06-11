@@ -12,8 +12,10 @@ ASlime::ASlime()
 	// Use a sphere as a simple collision representation
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 
+	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
+
 	// Set the collision radius
-	CollisionComponent->InitSphereRadius(15.0f);
+	CollisionComponent->InitSphereRadius(55.0f);
 
 	// Set the root component as the collision component
 	RootComponent = CollisionComponent;
@@ -21,11 +23,12 @@ ASlime::ASlime()
 	// Set projectile movement constants
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-	ProjectileMovementComponent->InitialSpeed = 0.0f;
+	ProjectileMovementComponent->InitialSpeed = 300.0f;
 	ProjectileMovementComponent->MaxSpeed = 3000.0f;
-	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bRotationFollowsVelocity = false;
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;
+	ProjectileMovementComponent->Friction = 1.0f;
 
 	// Set initial slime state
 	SlimeState = ESlimeState::Stance;
@@ -51,14 +54,10 @@ void ASlime::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%f, %f, %f"), ProjectileMovementComponent->Velocity.X, ProjectileMovementComponent->Velocity.Y, ProjectileMovementComponent->Velocity.Z));
+
 	// Get vector from slime to player character
 	ToPlayer = Character->GetActorLocation() - GetActorLocation(); 
-
-	if (SlimeState == ESlimeState::JumpSquat || SlimeState == ESlimeState::Jump)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%f, %f, %f"), ToPlayer.X, ToPlayer.Y, ToPlayer.Z));
-	}
-
 	// Determine new rotation based on player character location
 	FRotator NewRotation = GetActorRotation();
 	float Rotation = atan(ToPlayer.Y / ToPlayer.X) * 180 / PI;
@@ -71,6 +70,7 @@ void ASlime::Tick(float DeltaTime)
 	NewRotation.Yaw = Rotation;
 	SetActorRotation(NewRotation);
 
+	// IF the slime is still living
 	if (Alive)
 	{
 		// Switch on the slime's state
@@ -78,7 +78,7 @@ void ASlime::Tick(float DeltaTime)
 		{
 		case ESlimeState::Stance:
 			// Check if the slime is close enough to "see" the player and jump towards them
-			if (fabs(ToPlayer.X) < 500 && fabs(ToPlayer.Y) < 500)
+			if (fabs(ToPlayer.X) < 1500 && fabs(ToPlayer.Y) < 1500)
 			{
 				WaitFrames++;
 				// If the frames have exceeded the wait time, begin the jump squat
@@ -95,7 +95,10 @@ void ASlime::Tick(float DeltaTime)
 			}
 			break;
 		case ESlimeState::Jump:
-
+			if (fabs(ProjectileMovementComponent->Velocity.X) < 0.1 && fabs(ProjectileMovementComponent->Velocity.Y) < 0.1)
+			{
+				SlimeState = ESlimeState::Stance;
+			}
 			break;
 		case ESlimeState::JumpSquat:
 			SquatFrames++;
@@ -104,6 +107,7 @@ void ASlime::Tick(float DeltaTime)
 			{
 				SlimeState = ESlimeState::Jump;
 				SquatFrames = 0;
+				Jump();
 			}
 			break;
 		}
@@ -147,12 +151,25 @@ void ASlime::Damage(uint8 Amount)
 	if (Health == 0)
 	{
 		Alive = false;
+		SlimeState = ESlimeState::JumpSquat;
 	}
 }
 
 // Function to make slime jump
 void ASlime::Jump()
 {
+	// Get direction the slime is facing, then scale for jumping
+	FVector Direction = ToPlayer;
+	if (fabs(Direction.X) > 800 || fabs(Direction.Y) > 800)
+	{
+		Direction.X = 2 * Direction.X / 3;
+		Direction.Y = 2 * Direction.Y / 3;
+	}
+	// Give upwards velocity to make it jump
+	Direction.Z += 500;
 
+	// Change projectile movement component velocity and reset updated component 
+	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+	ProjectileMovementComponent->Velocity = Direction;
 }
 
