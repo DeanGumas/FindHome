@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "FPS_Character.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
@@ -10,6 +9,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Materials/MaterialInterface.h"
+#include "FPS_Character.h"
 #include "Slime.generated.h"
 
 class AFPS_Character;
@@ -46,14 +46,6 @@ public:
 	// Projectile movement component
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
-
-	// Character movement component
-	//UPROPERTY(VisibleAnywhere, Category = Movement)
-	//UCharacterMovementComponent* CharacterMovementComponent;
-
-	// Movement component
-	UPROPERTY(VisibleAnywhere, Category = Movement)
-	UMovementComponent* MovementComponent;
 
 	// Slime State enum
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)

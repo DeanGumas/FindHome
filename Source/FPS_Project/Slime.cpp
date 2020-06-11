@@ -54,8 +54,6 @@ void ASlime::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%f, %f, %f"), ProjectileMovementComponent->Velocity.X, ProjectileMovementComponent->Velocity.Y, ProjectileMovementComponent->Velocity.Z));
-
 	// Get vector from slime to player character
 	ToPlayer = Character->GetActorLocation() - GetActorLocation(); 
 	// Determine new rotation based on player character location
@@ -148,6 +146,7 @@ void ASlime::Tick(float DeltaTime)
 void ASlime::Damage(uint8 Amount)
 {
 	Health -= Amount;
+	// Start death animation by changing to jump squat and set alive to false
 	if (Health == 0)
 	{
 		Alive = false;

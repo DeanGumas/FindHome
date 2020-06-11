@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Slime.h"
+#include "BreakableBlock.h"
 #include "BasicProjectile.generated.h"
 
 UCLASS()

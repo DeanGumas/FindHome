@@ -56,11 +56,20 @@ void ABasicProjectile::ShootInDirection(const FVector& ShootDirection)
 // Function to handle collision
 void ABasicProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// Check if the projectile hit a slime
 	ASlime* Slime = Cast<ASlime>(OtherActor);
 	if (Slime)
 	{
 		Slime->Damage(Damage);
 	}
+
+	// Check if the projectile hit a breakable block
+	ABreakableBlock* Block = Cast<ABreakableBlock>(OtherActor);
+	if (Block)
+	{
+		Block->Damage(Damage);
+	}
+
 	else if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
