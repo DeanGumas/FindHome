@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "BasicProjectile.h"
 #include "FPS_Character.generated.h"
 
@@ -93,6 +94,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 ShootFrequency = 30;
 
+	// Character minimum walk speed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	int MinWalkSpeed;
+
+	// Character maximum walk speed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	int MaxWalkSpeed;
+
+	// Character acceleration
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 Acceleration;
+
+	// Frames after starting walking before character starts sprinting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 SprintFrames;
+
+	// Frames for JumpSquat animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	uint8 JumpSquatFrames;
+
 	// Character Health Value
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	uint8 Health = 3;
@@ -124,5 +145,14 @@ private:
 
 	// Whether the last shot was with the left or right gun
 	bool RightShot = false;
+
+	// Whether the character can sprint or not
+	bool Sprint = false;
+
+	// Frames the character has been running
+	uint8 RunFrames = 0;
+
+	// Character walk speed
+	int WalkSpeed = 600;
 };
   

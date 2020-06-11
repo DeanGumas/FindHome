@@ -64,10 +64,17 @@ void ABasicProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	}
 
 	// Check if the projectile hit a breakable block
-	ABreakableBlock* Block = Cast<ABreakableBlock>(OtherActor);
-	if (Block)
+	ABreakableBlock* BreakableBlock = Cast<ABreakableBlock>(OtherActor);
+	if (BreakableBlock)
 	{
-		Block->Damage(Damage);
+		BreakableBlock->Damage(Damage);
+	}
+
+	// Check if the projectile hit a movable block
+	AMovableBlock* MovableBlock = Cast<AMovableBlock>(OtherActor);
+	if (MovableBlock)
+	{
+		MovableBlock->Hit();
 	}
 
 	else if (OtherActor != this && OtherComponent->IsSimulatingPhysics())

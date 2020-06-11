@@ -54,6 +54,10 @@ void AFPS_Character::Tick(float DeltaTime)
 	if (Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::RightShot && CharacterState != ECharState::LeftShot)
 	{
 		CharacterState = ECharState::Standing;
+		RunFrames = 0;
+		Sprint = false;
+		WalkSpeed = MinWalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 
 	if (!Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::Jump)
@@ -74,14 +78,25 @@ void AFPS_Character::Tick(float DeltaTime)
 		}
 	}
 
+	// Increment JumpSquat towards jump state
 	if (CharacterState == ECharState::JumpSquat)
 	{
 		SquatFrames++;
-		if (SquatFrames == 10)
+		if (SquatFrames == JumpSquatFrames)
 		{
 			CharacterState = ECharState::Jump;
 			bPressedJump = true;
 			SquatFrames = 0;
+		}
+	}
+
+	// Increment running frames until the character can sprint
+	if (CharacterState == ECharState::Running)
+	{
+		RunFrames++;
+		if (RunFrames == SprintFrames)
+		{
+			Sprint = true;
 		}
 	}
 
@@ -123,6 +138,25 @@ void AFPS_Character::MoveForward(float Value)
 {
 	// Find out which way is forward and record that the player wants to move in that direction
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	// Use temporary 2D vector to normalize the direction vector along the X and Y axes
+	FVector2D temp;
+	temp.X = Direction.X;
+	temp.Y = Direction.Y;
+	temp.Normalize(0.0f);
+	Direction.X = temp.X;
+	Direction.Y = temp.Y;
+
+	// If sprinting, update the maximum walk speed accordingly
+	if (Sprint)
+	{
+		if (WalkSpeed < MaxWalkSpeed)
+		{
+			WalkSpeed += Acceleration;
+		}
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+
+	// Add the necessary movement input
 	AddMovementInput(Direction, Value);
 }
 
@@ -138,6 +172,7 @@ void AFPS_Character::MoveRight(float Value)
 void AFPS_Character::StartJump()
 {
 	CharacterState = ECharState::JumpSquat;
+	RunFrames = 0;
 }
 
 // Handle jump released

@@ -8,6 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Slime.h"
 #include "BreakableBlock.h"
+#include "MovableBlock.h"
 #include "BasicProjectile.generated.h"
 
 UCLASS()
