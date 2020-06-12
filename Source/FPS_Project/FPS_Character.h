@@ -78,6 +78,10 @@ public:
 	UFUNCTION()
 	void Damage(uint8 Amount);
 
+	// Function to collect a gem for the player
+	UFUNCTION()
+	void GetGem();
+
 	// Launch location for projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
@@ -117,6 +121,10 @@ public:
 	// Character Health Value
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	uint8 Health = 3;
+
+	// Character Gems collected
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	uint8 Gems = 0;
 
 	// Projectile class to spawn when shooting
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)

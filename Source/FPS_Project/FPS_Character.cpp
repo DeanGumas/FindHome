@@ -238,6 +238,7 @@ void AFPS_Character::Shoot()
 	}
 }
 
+// Function to start character shooting projectiles
 void AFPS_Character::StartShooting()
 {
 	StillShooting = true;
@@ -245,6 +246,7 @@ void AFPS_Character::StartShooting()
 	Shoot();
 }
 
+// Function to stop character shooting projectiles and update state if necessary
 void AFPS_Character::StopShooting()
 {
 	if (CharacterState == ECharState::Shooting || CharacterState == ECharState::RightShot || CharacterState == ECharState::LeftShot)
@@ -255,7 +257,14 @@ void AFPS_Character::StopShooting()
 	ShootFrames = 0;
 }
 
+// Function to take damage by the specified amount
 void AFPS_Character::Damage(uint8 Amount)
 {
 	Health -= Amount;
+}
+
+// Function to collect a gem
+void AFPS_Character::GetGem()
+{
+	Gems += 1;
 }

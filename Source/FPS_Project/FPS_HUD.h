@@ -35,6 +35,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* HeartTexture;
 
+	// Gems drawn at bottom left
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* GemTexture;
+
+	// Full gem drawn at bottom left
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* GemFullTexture;
+
 	// Reference to main character
 	AFPS_Character* Character;
 };

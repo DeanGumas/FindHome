@@ -27,7 +27,7 @@ ASlime::ASlime()
 	ProjectileMovementComponent->MaxSpeed = 3000.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = false;
 	ProjectileMovementComponent->bShouldBounce = true;
-	ProjectileMovementComponent->Bounciness = 0.3f;
+	ProjectileMovementComponent->Bounciness = 0.5f;
 	ProjectileMovementComponent->Friction = 1.0f;
 
 	// Set initial slime state

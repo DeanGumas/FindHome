@@ -27,6 +27,9 @@ void AFPS_HUD::DrawHUD()
 		FVector2D HeartDrawPosition1(20, 20);
 		FVector2D HeartDrawPosition2(40, 20);
 		FVector2D HeartDrawPosition3(60, 20);
+		
+		// Gem draw positions
+		FVector2D GemDrawPosition(20, 40);
 
 		// Draw the crosshairs at centerpoint
 		FCanvasTileItem TileItem(CrosshairDrawPosition, CrosshairTexture->Resource, FLinearColor::White);
@@ -63,6 +66,20 @@ void AFPS_HUD::DrawHUD()
 			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
 			HeartItem1.BlendMode = SE_BLEND_Translucent;
 			Canvas->DrawItem(HeartItem1);
+		}
+
+		// Draw gems at bottom left
+		if (Character->Gems >= 1)
+		{
+			FCanvasTileItem GemItem(GemDrawPosition, GemFullTexture->Resource, FLinearColor::White);
+			GemItem.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(GemItem);
+		}
+		else
+		{
+			FCanvasTileItem GemItem(GemDrawPosition, GemTexture->Resource, FLinearColor::White);
+			GemItem.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(GemItem);
 		}
 	}
 }
