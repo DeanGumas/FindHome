@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	EMovableBlockState BlockState;
 
-	// Called when the block is hit
+	// Called when the block is hit by a projectile
 	UFUNCTION()
 	void Hit();
 
@@ -73,4 +73,7 @@ private:
 
 	// Z increment per frame
 	float ZIncrement;
+
+	// Overlapped actors
+	TSet<AActor*> OverlappingActors;
 };

@@ -8,6 +8,17 @@ AMovableBlock::AMovableBlock()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Set up box collision
+	//CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+
+	// Set collision profile
+	//CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("BlockAll"));
+	//CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AMovableBlock::OnOverlapBegin);
+
+	//CollisionComponent->InitBoxExtent(FVector(50, 50, 50));
+
+	//RootComponent = CollisionComponent;
 }
 
 // Called when the game starts or when spawned
@@ -103,12 +114,26 @@ void AMovableBlock::Tick(float DeltaTime)
 		SetActorLocation(CurrentPosition);
 		break;
 	}
+	GetOverlappingActors(OverlappingActors, nullptr);
+	if (OverlappingActors.Num() >= 1)
+	{
+		switch (BlockState)
+		{
+		case EMovableBlockState::MovingToEnd:
+			BlockState = EMovableBlockState::MovingToStart;
+			break;
+		case EMovableBlockState::MovingToStart:
+			BlockState = EMovableBlockState::MovingToEnd;
+			break;
+		}
+	}
 }
 
 // Called when the block is hit by a projectile
 void AMovableBlock::Hit()
 {
 	// If the block is not currently moving, start moving towards the start or end position
+	// If it is already moving, start moving in the opposite direction
 	// Also change texture
 	switch (BlockState)
 	{
@@ -116,10 +141,15 @@ void AMovableBlock::Hit()
 		BlockState = EMovableBlockState::MovingToEnd;
 		DynamicMaterial->SetScalarParameterValue(TEXT("IsMoving"), 1.0f);
 		break;
+	case EMovableBlockState::MovingToEnd:
+		BlockState = EMovableBlockState::MovingToStart;
+		break;
+	case EMovableBlockState::MovingToStart:
+		BlockState = EMovableBlockState::MovingToEnd;
+		break;
 	case EMovableBlockState::End:
 		BlockState = EMovableBlockState::MovingToStart;
 		DynamicMaterial->SetScalarParameterValue(TEXT("IsMoving"), 1.0f);
 		break;
 	}
 }
-
