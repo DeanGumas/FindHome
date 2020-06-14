@@ -58,29 +58,33 @@ void ABasicProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 {
 	// Check if the projectile hit a slime
 	ASlime* Slime = Cast<ASlime>(OtherActor);
+	ABreakableBlock* BreakableBlock = Cast<ABreakableBlock>(OtherActor);
+	AMovableBlock* MovableBlock = Cast<AMovableBlock>(OtherActor);
+	AFreezableBlock* FreezableBlock = Cast<AFreezableBlock>(OtherActor);
 	if (Slime)
 	{
 		Slime->Damage(Damage);
 	}
-
 	// Check if the projectile hit a breakable block
-	ABreakableBlock* BreakableBlock = Cast<ABreakableBlock>(OtherActor);
-	if (BreakableBlock)
+	else if (BreakableBlock)
 	{
 		BreakableBlock->Damage(Damage);
 	}
-
 	// Check if the projectile hit a movable block
-	AMovableBlock* MovableBlock = Cast<AMovableBlock>(OtherActor);
-	if (MovableBlock)
+	else if (MovableBlock)
 	{
 		MovableBlock->Hit();
 	}
-
+	// Check if the projectile hit a freezable block
+	else if(FreezableBlock)
+	{
+		FreezableBlock->Hit();
+	}
 	else if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 	}
+	// Destroy the projectile after the hit
 	Destroy();
 }
  

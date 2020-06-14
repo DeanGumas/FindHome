@@ -9,6 +9,7 @@
 #include "Slime.h"
 #include "BreakableBlock.h"
 #include "MovableBlock.h"
+#include "FreezableBlock.h"
 #include "BasicProjectile.generated.h"
 
 UCLASS()

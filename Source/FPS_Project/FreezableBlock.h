@@ -5,25 +5,25 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Materials/MaterialInterface.h"
-#include "MovableBlock.generated.h"
+#include "FreezableBlock.generated.h"
 
 UENUM(BlueprintType)
-enum class EMovableBlockState : uint8
+enum class EFreezableBlockState : uint8
 {
-	Start,
 	MovingToEnd,
-	End, 
+	FrozenMovingToEnd,
+	FrozenMovingToStart,
 	MovingToStart
 };
 
 UCLASS()
-class FPS_PROJECT_API AMovableBlock : public AActor
+class FPS_PROJECT_API AFreezableBlock : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AMovableBlock();
+	AFreezableBlock();
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,9 +41,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	float Speed = 1;
 
+	// How many frames to keep the block frozen
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	int FrozenFrames;
+
 	// Movable block state
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
-	EMovableBlockState BlockState;
+	EFreezableBlockState BlockState;
 
 	// Called when the block is hit by a projectile
 	UFUNCTION()
@@ -73,4 +77,7 @@ private:
 
 	// Overlapped actors
 	TSet<AActor*> OverlappingActors;
+
+	// How long the block has been frozen
+	int FrozenCounter = 0;
 };
