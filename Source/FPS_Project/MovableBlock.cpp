@@ -8,17 +8,6 @@ AMovableBlock::AMovableBlock()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	// Set up box collision
-	//CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-
-	// Set collision profile
-	//CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("BlockAll"));
-	//CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AMovableBlock::OnOverlapBegin);
-
-	//CollisionComponent->InitBoxExtent(FVector(50, 50, 50));
-
-	//RootComponent = CollisionComponent;
 }
 
 // Called when the game starts or when spawned
@@ -80,6 +69,9 @@ void AMovableBlock::BeginPlay()
 	EndPosition.X = StartPosition.X + Offset.X;
 	EndPosition.Y = StartPosition.Y + Offset.Y;
 	EndPosition.Z = StartPosition.Z + Offset.Z;
+
+	// Set current position
+	CurrentPosition = StartPosition;
 }
 
 // Called every frame
@@ -90,7 +82,6 @@ void AMovableBlock::Tick(float DeltaTime)
 	switch (BlockState)
 	{
 	case EMovableBlockState::MovingToEnd:
-		CurrentPosition = GetActorLocation();
 		CurrentPosition.X += XIncrement;
 		CurrentPosition.Y += YIncrement;
 		CurrentPosition.Z += ZIncrement;
@@ -102,7 +93,6 @@ void AMovableBlock::Tick(float DeltaTime)
 		SetActorLocation(CurrentPosition);
 		break;
 	case EMovableBlockState::MovingToStart:
-		CurrentPosition = GetActorLocation();
 		CurrentPosition.X -= XIncrement;
 		CurrentPosition.Y -= YIncrement;
 		CurrentPosition.Z -= ZIncrement;
