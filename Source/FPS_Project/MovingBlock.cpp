@@ -111,3 +111,11 @@ void AMovingBlock::Tick(float DeltaTime)
 	}
 }
 
+// Overridden reset function
+void AMovingBlock::Reset()
+{
+	MovingForward = true;
+	SetActorLocation(StartPosition);
+	CurrentPosition = StartPosition;
+}
+

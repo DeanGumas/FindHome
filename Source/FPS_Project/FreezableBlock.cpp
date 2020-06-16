@@ -139,3 +139,11 @@ void AFreezableBlock::Hit()
 	}
 }
 
+// Overridden reset function
+void AFreezableBlock::Reset()
+{
+	SetActorLocation(StartPosition);
+	BlockState = EFreezableBlockState::MovingToEnd;
+	DynamicMaterial->SetScalarParameterValue(TEXT("IsFrozen"), 0.0f);
+	CurrentPosition = StartPosition;
+}

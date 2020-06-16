@@ -24,6 +24,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Overridden reset function
+	virtual void Reset() override;
+
 	// Called to damage the block
 	UFUNCTION()
 	void Damage(uint8 Amount);

@@ -143,3 +143,11 @@ void AMovableBlock::Hit()
 		break;
 	}
 }
+
+// Overridden reset function
+void AMovableBlock::Reset()
+{
+	BlockState = EMovableBlockState::Start;
+	SetActorLocation(StartPosition);
+	CurrentPosition = StartPosition;
+}

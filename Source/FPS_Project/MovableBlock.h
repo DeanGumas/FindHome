@@ -33,6 +33,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Overridden reset function
+	virtual void Reset() override;
+
 	// Offset to move the block
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
 	FVector Offset;

@@ -6,6 +6,10 @@
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Slime.h"
+#include "MovingBlock.h"
+#include "MovableBlock.h"
+#include "FreezableBlock.h"
+#include "BreakableBlock.h"
 #include "FPS_ProjectGameModeBase.generated.h"
 
 /**
@@ -21,4 +25,12 @@ class FPS_PROJECT_API AFPS_ProjectGameModeBase : public AGameModeBase
 	virtual void ResetLevel() override;
 
 	TArray<AActor*> Slimes;
+
+	TArray<AActor*> MovingBlocks;
+
+	TArray<AActor*> MovableBlocks;
+
+	TArray<AActor*> FreezableBlocks;
+
+	TArray<AActor*> BreakableBlocks;
 };

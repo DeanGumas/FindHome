@@ -141,6 +141,7 @@ void ASlime::Tick(float DeltaTime)
 		else
 		{
 			SetActorHiddenInGame(true);
+			SetActorEnableCollision(false);
 		}
 	}
 }
@@ -185,5 +186,6 @@ void ASlime::Reset()
 	SetActorLocation(StartLocation);
 	// Show the character in game again
 	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
 }
 

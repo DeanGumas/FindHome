@@ -41,7 +41,17 @@ void ABreakableBlock::Damage(uint8 Amount)
 	// Destroy the block at 0% health
 	else if (Health == 0)
 	{
-		Destroy();
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
 	}
+}
+
+// Overridden reset function
+void ABreakableBlock::Reset()
+{
+	Health = 100;
+	DynamicMaterial->SetScalarParameterValue(TEXT("IsCracked"), 0.0f);
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
 }
 
