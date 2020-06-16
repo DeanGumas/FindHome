@@ -47,6 +47,9 @@ void ASlime::BeginPlay()
 
 	// Get reference to player character
 	Character = Cast<AFPS_Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	// Get starting location of the slime
+	StartLocation = GetActorLocation();
 }
 
 // Called every frame
@@ -137,7 +140,7 @@ void ASlime::Tick(float DeltaTime)
 		}
 		else
 		{
-			Destroy();
+			SetActorHiddenInGame(true);
 		}
 	}
 }
@@ -170,5 +173,17 @@ void ASlime::Jump()
 	// Change projectile movement component velocity and reset updated component 
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->Velocity = Direction;
+}
+
+// Overridden reset function. Reset health, color, location and whether or not it is hidden
+void ASlime::Reset()
+{
+	Health = 100;
+	Brightness = 1;
+	DynamicMaterial->SetScalarParameterValue(TEXT("Brightness"), Brightness);
+	Alive = true;
+	SetActorLocation(StartLocation);
+	// Show the character in game again
+	SetActorHiddenInGame(false);
 }
 

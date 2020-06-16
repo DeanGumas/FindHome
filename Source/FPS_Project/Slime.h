@@ -39,6 +39,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Overridden reset function
+	virtual void Reset() override;
+
 	// Sphere collision component
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
@@ -98,4 +101,7 @@ private:
 
 	// Vector directed from the slime to the player character
 	FVector ToPlayer;
+
+	// Starting location of the slime
+	FVector StartLocation;
 };

@@ -42,6 +42,7 @@ AFPS_Character::AFPS_Character()
 void AFPS_Character::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 // Called every frame
@@ -109,6 +110,13 @@ void AFPS_Character::Tick(float DeltaTime)
 			ShootFrames = 0;
 		}
 	}
+
+	// Check if the character has fallen down too far, if so respawn them
+	if (GetActorLocation().Z < -1000)
+	{
+		Respawn();
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), GetActorLocation().Z));
 }
 
 // Called to bind functionality to input
@@ -261,10 +269,45 @@ void AFPS_Character::StopShooting()
 void AFPS_Character::Damage(uint8 Amount)
 {
 	Health -= Amount;
+	if (Health == 0)
+	{
+		Respawn();
+	}
 }
 
 // Function to collect a gem
 void AFPS_Character::GetGem()
 {
 	Gems += 1;
+}
+
+// Function to respawn the character
+void AFPS_Character::Respawn()
+{
+	Health = 3;
+	if (RespawnLocation)
+	{
+		SetActorLocation(RespawnLocation->Location);
+	}
+	else
+	{
+		SetActorLocation(FVector(0, 0, 0));
+	}
+	GetWorld()->GetAuthGameMode()->ResetLevel();
+}
+
+// Function to set the players respawn location
+void AFPS_Character::SetRespawnLocation(ARespawnFlag* Flag)
+{
+	if (RespawnLocation)
+	{
+		RespawnLocation->SetInactive();
+	}
+	RespawnLocation = Flag;
+}
+
+// Overridden reset function
+void AFPS_Character::Reset()
+{
+
 }

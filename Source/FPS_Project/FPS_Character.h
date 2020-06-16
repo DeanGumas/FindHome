@@ -7,7 +7,10 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameModeBase.h"
 #include "BasicProjectile.h"
+#include "RespawnFlag.h"
+#include "Slime.h"
 #include "FPS_Character.generated.h"
 
 UENUM(BlueprintType)
@@ -41,6 +44,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// Override reset function
+	virtual void Reset() override;
 
 	// Handles input for moving forward and backward
 	UFUNCTION()
@@ -81,6 +87,14 @@ public:
 	// Function to collect a gem for the player
 	UFUNCTION()
 	void GetGem();
+
+	// Function to respawn the player
+	UFUNCTION()
+	void Respawn();
+
+	// Function to set the players respawn location
+	UFUNCTION()
+	void SetRespawnLocation(ARespawnFlag* Flag);
 
 	// Launch location for projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -162,5 +176,8 @@ private:
 
 	// Character walk speed
 	int WalkSpeed = 600;
+
+	// Respawn location
+	ARespawnFlag* RespawnLocation;
 };
   
