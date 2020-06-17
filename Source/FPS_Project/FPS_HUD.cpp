@@ -82,5 +82,24 @@ void AFPS_HUD::DrawHUD()
 			Canvas->DrawItem(GemItem);
 		}
 	}
+	// If a sign is being displayed
+	if (DisplaySign)
+	{
+		DrawRect(FLinearColor::Blue, 400.0f, 400.0f, 200.0f, 200.0f);
+		DrawText(SignText, FLinearColor::Black, 400.0f, 400.0f);
+	}
 }
 
+// Function to start displaying sign text
+UFUNCTION()
+void AFPS_HUD::DisplayText(FString Text)
+{
+	DisplaySign = true;
+	SignText = Text;
+}
+
+// Function to stop displaying sign text
+void AFPS_HUD::StopDisplayText()
+{
+	DisplaySign = false;
+}

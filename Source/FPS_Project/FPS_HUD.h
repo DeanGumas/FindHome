@@ -25,6 +25,14 @@ public:
 	// Primary draw function for the HUD
 	virtual void DrawHUD() override;
 
+	// Function to start displaying sign text
+	UFUNCTION()
+	void DisplayText(FString Text);
+
+	// Function to stop displaying sign text
+	UFUNCTION()
+	void StopDisplayText();
+
 protected:
 
 	// Crosshair drawn at center of the screen
@@ -45,4 +53,10 @@ protected:
 
 	// Reference to main character
 	AFPS_Character* Character;
+
+	// Whether or not a sign is being displayed
+	bool DisplaySign = false;
+
+	// The text of the sign being displayed
+	FString SignText;
 };
