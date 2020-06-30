@@ -24,8 +24,8 @@ public:
 	FVector Range;
 
 	// Message to display with the sign
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FString Message;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (MultiLine = true))
+	FText Message;
 
 	// Location of the sign
 	FVector Location;
@@ -46,4 +46,7 @@ private:
 
 	// If the sign is currently displaying on the characters screen
 	bool IsActive = false;
+
+	// If the player is within range of the sign
+	bool WithinRange = false;
 };

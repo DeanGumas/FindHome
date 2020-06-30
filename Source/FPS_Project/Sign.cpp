@@ -31,14 +31,18 @@ void ASign::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Get vector to player and check if within range of the sign
+	ToPlayer = Character->GetActorLocation() - Location;
 	if (IsActive)
 	{
-
+		if (fabs(ToPlayer.X) > Range.X || fabs(ToPlayer.Y) > Range.Y || fabs(ToPlayer.Z) > Range.Z)
+		{
+			IsActive = false;
+			HUD->StopDisplayText();
+		}
 	}
 	else
 	{
-		// Get vector to player and check if within range to change active respawn location
-		ToPlayer = Character->GetActorLocation() - Location;
 		if (!IsActive && fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
 		{
 			IsActive = true;

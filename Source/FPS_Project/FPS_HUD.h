@@ -2,12 +2,13 @@
 
 #pragma once
 
-#include "FPS_Character.h"
 #include "FPS_Project.h"
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Engine/Canvas.h"
 #include "FPS_HUD.generated.h"
+
+class AFPS_Character;
 
 /**
  * 
@@ -25,13 +26,37 @@ public:
 	// Primary draw function for the HUD
 	virtual void DrawHUD() override;
 
-	// Function to start displaying sign text
+	// Function to start displaying sign prompt text
 	UFUNCTION()
-	void DisplayText(FString Text);
+	void DisplayText(FText Text);
 
-	// Function to stop displaying sign text
+	// Function to stop displaying sign prompt text
 	UFUNCTION()
 	void StopDisplayText();
+
+	// Function to draw sign message
+	UFUNCTION()
+	void DrawSignMessage();
+
+	// Function to stop drawing sign message
+	UFUNCTION()
+	void StopDrawSignMessage();
+
+	// Sign TextBox size
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	FVector2D SignTextBoxSize;
+
+	// The text of the sign being displayed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI, meta = (MultiLine = true))
+	FText SignText;
+
+	// Whether or not a sign is being displayed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	bool DisplaySign = false;
+
+	// Whether the player is within range to read a sign
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	bool WithinSignRange = false;
 
 protected:
 
@@ -43,20 +68,28 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* HeartTexture;
 
-	// Gems drawn at bottom left
+	// Gems drawn at top left
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* GemTexture;
 
-	// Full gem drawn at bottom left
+	// Full gem drawn at top left
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* GemFullTexture;
 
+	// Sign background to be drawn on screen
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* SignBackgroundTexture;
+
+private:
 	// Reference to main character
 	AFPS_Character* Character;
 
-	// Whether or not a sign is being displayed
-	bool DisplaySign = false;
+	// Center of canvas
+	FVector2D Center;
 
-	// The text of the sign being displayed
-	FString SignText;
+	// Text size in the X Dimension
+	float XSize;
+
+	// Text size in the Y Dimension
+	float YSize;
 };

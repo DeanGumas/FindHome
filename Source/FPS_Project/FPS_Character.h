@@ -10,7 +10,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "BasicProjectile.h"
 #include "RespawnFlag.h"
-#include "Slime.h"
 #include "FPS_Character.generated.h"
 
 UENUM(BlueprintType)
@@ -45,9 +44,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Override reset function
-	virtual void Reset() override;
-
 	// Handles input for moving forward and backward
 	UFUNCTION()
 	void MoveForward(float Value);
@@ -79,6 +75,10 @@ public:
 	// Stop shooting projectiles
 	UFUNCTION()
 	void StopShooting();
+
+	// Start or stop reading a sign if within range
+	UFUNCTION()
+	void StartStopReading();
 
 	// Function to damage the character by the specified amount
 	UFUNCTION()
@@ -139,6 +139,12 @@ public:
 	// Character Gems collected
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	uint8 Gems = 0;
+
+	// Whether the player can read a sign or not
+	bool CanRead = false;
+
+	// Whether or not the character is reading
+	bool Reading = false;
 
 	// Projectile class to spawn when shooting
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)

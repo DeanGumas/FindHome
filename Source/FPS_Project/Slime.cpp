@@ -2,6 +2,7 @@
 
 
 #include "Slime.h"
+#include "FPS_Character.h"
 
 // Sets default values
 ASlime::ASlime()

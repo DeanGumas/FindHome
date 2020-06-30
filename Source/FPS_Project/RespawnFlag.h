@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Materials/MaterialInterface.h"
-#include "FPS_Character.h"
 #include "RespawnFlag.generated.h"
 
 class AFPS_Character;
@@ -23,6 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector Range;
 
+	// Offset by which to set player respawn
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector Offset;
+
 	// Function to set the respawn flag as active
 	UFUNCTION()
 	void SetActive();
@@ -31,7 +34,7 @@ public:
 	UFUNCTION()
 	void SetInactive();
 
-	// Location of the respawn flag
+	// Respawn location of the respawn flag
 	FVector Location;
 
 protected:

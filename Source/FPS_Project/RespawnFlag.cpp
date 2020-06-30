@@ -2,6 +2,7 @@
 
 
 #include "RespawnFlag.h"
+#include "FPS_Character.h"
 
 // Sets default values
 ARespawnFlag::ARespawnFlag()
@@ -25,8 +26,11 @@ void ARespawnFlag::BeginPlay()
 	// Get reference to player character
 	Character = Cast<AFPS_Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-	// Get constant position of the respawn flag
+	// Get constant position of the respawn flag and offset by specified amount
 	Location = GetActorLocation();
+	Location.X += Offset.X;
+	Location.Y += Offset.Y;
+	Location.Z += Offset.Z;
 }
 
 // Called every frame

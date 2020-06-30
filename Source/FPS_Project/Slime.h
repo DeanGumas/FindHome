@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/MovementComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Materials/MaterialInterface.h"
-#include "FPS_Character.h"
+//#include "FPS_Character.h"
 #include "Slime.generated.h"
 
 class AFPS_Character;

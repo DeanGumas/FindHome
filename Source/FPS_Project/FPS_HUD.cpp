@@ -2,6 +2,7 @@
 
 
 #include "FPS_HUD.h"
+#include "FPS_Character.h"
 
 void AFPS_HUD::BeginPlay()
 {
@@ -15,13 +16,14 @@ void AFPS_HUD::DrawHUD()
 {
 	Super::DrawHUD();
 
+	// Find center of canvass
+	Center = FVector2D(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
+
 	if (CrosshairTexture && HeartTexture)
 	{
-		// Find center of canvas
-		FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
-
 		// Offset by half of the texture's dimensions to align in center
 		FVector2D CrosshairDrawPosition(Center.X - (CrosshairTexture->GetSurfaceWidth() * 0.5f), Center.Y - (CrosshairTexture->GetSurfaceHeight() * 0.5f));
+		FVector2D SignDrawPosition(Center.X - (SignBackgroundTexture->GetSurfaceWidth() * 0.5f), Center.Y - (SignBackgroundTexture->GetSurfaceHeight() * 0.5f));
 
 		// Heart draw positions
 		FVector2D HeartDrawPosition1(20, 20);
@@ -31,10 +33,19 @@ void AFPS_HUD::DrawHUD()
 		// Gem draw positions
 		FVector2D GemDrawPosition(20, 40);
 
-		// Draw the crosshairs at centerpoint
-		FCanvasTileItem TileItem(CrosshairDrawPosition, CrosshairTexture->Resource, FLinearColor::White);
-		TileItem.BlendMode = SE_BLEND_Translucent;
-		Canvas->DrawItem(TileItem);
+		// Draw the crosshairs at centerpoint or the sign background
+		if (!DisplaySign)
+		{
+			FCanvasTileItem TileItem(CrosshairDrawPosition, CrosshairTexture->Resource, FLinearColor::White);
+			TileItem.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(TileItem);
+		}
+		else
+		{
+			FCanvasTileItem TileItem(SignDrawPosition, SignBackgroundTexture->Resource, FLinearColor::White);
+			TileItem.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(TileItem);
+		}
 
 		// Draw the hearts in the top left corner
 		if (Character->Health == 3)
@@ -81,25 +92,44 @@ void AFPS_HUD::DrawHUD()
 			GemItem.BlendMode = SE_BLEND_Translucent;
 			Canvas->DrawItem(GemItem);
 		}
-	}
-	// If a sign is being displayed
-	if (DisplaySign)
-	{
-		DrawRect(FLinearColor::Blue, 400.0f, 400.0f, 200.0f, 200.0f);
-		DrawText(SignText, FLinearColor::Black, 400.0f, 400.0f);
+
+		if (Character->CanRead)
+		{
+			DrawSignMessage();
+		}
+		else
+		{
+			StopDrawSignMessage();
+		}
 	}
 }
 
-// Function to start displaying sign text
-UFUNCTION()
-void AFPS_HUD::DisplayText(FString Text)
+// Function to start displaying sign prompt, and update displayable text
+void AFPS_HUD::DisplayText(FText Text)
 {
-	DisplaySign = true;
+	WithinSignRange = true;
 	SignText = Text;
 }
 
 // Function to stop displaying sign text
 void AFPS_HUD::StopDisplayText()
 {
+	WithinSignRange = false;
+}
+
+// Function to display the sign message
+void AFPS_HUD::DrawSignMessage()
+{
+	if (WithinSignRange)
+	{
+		DisplaySign = true;
+		Character->Reading = true;
+	}
+}
+
+// Function to stop displaying the sign message
+void AFPS_HUD::StopDrawSignMessage()
+{
 	DisplaySign = false;
+	Character->Reading = false;
 }

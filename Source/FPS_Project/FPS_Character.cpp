@@ -139,6 +139,9 @@ void AFPS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// Set up shooting bindings
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AFPS_Character::StartShooting);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AFPS_Character::StopShooting);
+
+	// Set up sign reading bindings
+	PlayerInputComponent->BindAction("Read", IE_Pressed, this, &AFPS_Character::StartStopReading);
 }
 
 // Handle moving forward
@@ -164,8 +167,11 @@ void AFPS_Character::MoveForward(float Value)
 		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 
-	// Add the necessary movement input
-	AddMovementInput(Direction, Value);
+	// Only allow movement if the character is not reading a sign
+	if (!Reading)
+	{
+		AddMovementInput(Direction, Value);
+	}
 }
 
 // Handle moving side to side
@@ -173,7 +179,12 @@ void AFPS_Character::MoveRight(float Value)
 {
 	// Find out which was is right and record the player wants to move in that direction, scale to half speed of running forward
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y)/2;
-	AddMovementInput(Direction, Value);
+	
+	// Only allow movement if the character is not reading a sign
+	if (!Reading)
+	{
+		AddMovementInput(Direction, Value);
+	}
 }
 
 // Handle jump start
@@ -306,8 +317,16 @@ void AFPS_Character::SetRespawnLocation(ARespawnFlag* Flag)
 	RespawnLocation = Flag;
 }
 
-// Overridden reset function
-void AFPS_Character::Reset()
+// Start or stop reading a sign if within range
+UFUNCTION()
+void AFPS_Character::StartStopReading()
 {
-
+	if (CanRead)
+	{
+		CanRead = false;
+	}
+	else
+	{
+		CanRead = true;
+	}
 }
