@@ -35,12 +35,13 @@ void AGem::Tick(float DeltaTime)
 	ToPlayer = Character->GetActorLocation() - GetActorLocation();
 
 	// Check if the character is within range to collect it
-	if (fabs(ToPlayer.X) < 50 && fabs(ToPlayer.Y) < 50 && fabs(ToPlayer.Z) < 50)
+	if (fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
 	{
 		Character->GetGem();
 		Destroy();
 	}
 
+	// Increase and decrease brightness as needed to make it appear like a beacon
 	if (Increasing)
 	{
 		BrightnessCounter++;
@@ -59,6 +60,7 @@ void AGem::Tick(float DeltaTime)
 			Increasing = true;
 		}
 	}
+
 	// Update brightness and continue to rotate the gem
 	DynamicMaterial->SetScalarParameterValue(TEXT("EmissiveStrength"), BrightnessCounter/100.0);
 	AddActorLocalRotation(FQuat(FRotator(0, RotationSpeed, 0)), false, 0, ETeleportType::None);

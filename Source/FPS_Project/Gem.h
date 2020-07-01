@@ -33,6 +33,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Appearance)
 	float RotationSpeed;
 
+	// Range for the character to obtain the gem
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector Range;
+
 private:
 	// Dynamic material used to change color
 	UMaterialInstanceDynamic* DynamicMaterial;

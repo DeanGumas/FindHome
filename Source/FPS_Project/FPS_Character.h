@@ -132,10 +132,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 Acceleration;
 
-	// Frames after starting walking before character starts sprinting
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	uint8 SprintFrames;
-
 	// Frames for JumpSquat animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 JumpSquatFrames;
@@ -184,9 +180,6 @@ private:
 
 	// Whether the character can sprint or not
 	bool Sprint = false;
-
-	// Frames the character has been running
-	uint8 RunFrames = 0;
 
 	// Character walk speed
 	int WalkSpeed = 600;
