@@ -80,6 +80,14 @@ public:
 	UFUNCTION()
 	void StartStopReading();
 
+	// Start sprinting
+	UFUNCTION()
+	void StartSprinting();
+
+	// Stop sprinting
+	UFUNCTION()
+	void StopSprinting();
+
 	// Function to damage the character by the specified amount
 	UFUNCTION()
 	void Damage(uint8 Amount);

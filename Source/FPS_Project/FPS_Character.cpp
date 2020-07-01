@@ -92,6 +92,7 @@ void AFPS_Character::Tick(float DeltaTime)
 	}
 
 	// Increment running frames until the character can sprint
+	/*
 	if (CharacterState == ECharState::Running)
 	{
 		RunFrames++;
@@ -99,7 +100,7 @@ void AFPS_Character::Tick(float DeltaTime)
 		{
 			Sprint = true;
 		}
-	}
+	}*/
 
 	if (StillShooting)
 	{
@@ -142,6 +143,10 @@ void AFPS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	// Set up sign reading bindings
 	PlayerInputComponent->BindAction("Read", IE_Pressed, this, &AFPS_Character::StartStopReading);
+
+	// Set up sprint bindings
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AFPS_Character::StartSprinting);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AFPS_Character::StopSprinting);
 }
 
 // Handle moving forward
@@ -318,7 +323,6 @@ void AFPS_Character::SetRespawnLocation(ARespawnFlag* Flag)
 }
 
 // Start or stop reading a sign if within range
-UFUNCTION()
 void AFPS_Character::StartStopReading()
 {
 	if (CanRead)
@@ -329,4 +333,16 @@ void AFPS_Character::StartStopReading()
 	{
 		CanRead = true;
 	}
+}
+
+// Start sprinting
+void AFPS_Character::StartSprinting()
+{
+	Sprint = true;
+}
+
+// Stop sprinting
+void AFPS_Character::StopSprinting()
+{
+	Sprint = false;
 }
