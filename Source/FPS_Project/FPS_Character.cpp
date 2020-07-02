@@ -101,7 +101,7 @@ void AFPS_Character::Tick(float DeltaTime)
 	}
 
 	// Check if the character has fallen down too far, if so respawn them
-	if (GetActorLocation().Z < -1000)
+	if (GetActorLocation().Z < -20000)
 	{
 		Respawn();
 	}
