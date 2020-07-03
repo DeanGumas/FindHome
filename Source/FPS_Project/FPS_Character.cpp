@@ -52,6 +52,7 @@ void AFPS_Character::Tick(float DeltaTime)
 
 	FVector Velocity = GetVelocity();
 
+	// Check if the character landed and is stationary in the X and Y directions
 	if (Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::RightShot && CharacterState != ECharState::LeftShot)
 	{
 		CharacterState = ECharState::Standing;
@@ -60,11 +61,13 @@ void AFPS_Character::Tick(float DeltaTime)
 		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 
+	// Check if the character landed but is still moving in the X or Y directions
 	if (!Velocity.IsNearlyZero() && CharacterState != ECharState::JumpSquat && CharacterState != ECharState::Jump)
 	{
 		CharacterState = ECharState::Running;
 	}
 
+	// Check if the character has peaked during their jump or if they have landed
 	if (CharacterState == ECharState::Jump && fabs(Velocity.Z) <= 0.05)
 	{
 		if (Peaked)
@@ -90,6 +93,7 @@ void AFPS_Character::Tick(float DeltaTime)
 		}
 	}
 
+	// Continue shooting projectiles while the player is shooting
 	if (StillShooting)
 	{
 		ShootFrames++;
