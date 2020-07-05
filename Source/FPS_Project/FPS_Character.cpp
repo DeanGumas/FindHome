@@ -74,11 +74,18 @@ void AFPS_Character::Tick(float DeltaTime)
 		{
 			CharacterState = ECharState::Standing;
 			Peaked = false;
+			ApplyFallDamage();
 		}
 		else
 		{
 			Peaked = true;
 		}
+	}
+
+	// Check if the character fell off something and their Z velocity is negative
+	if (CharacterState != ECharState::Jump && Velocity.Z < -500)
+	{
+		CharacterState = ECharState::Jump;
 	}
 
 	// Increment JumpSquat towards jump state
@@ -104,12 +111,26 @@ void AFPS_Character::Tick(float DeltaTime)
 		}
 	}
 
+	// Check if the character is falling fast enough to take fall damage
+	if (Velocity.Z < (FallDamageVelocity * 3))
+	{
+		FallDamage = 3;
+	}
+	else if (Velocity.Z < (FallDamageVelocity * 2))
+	{
+		FallDamage = 2;
+	}
+	else if (Velocity.Z < FallDamageVelocity)
+	{
+		FallDamage = 1;
+	}
+
 	// Check if the character has fallen down too far, if so respawn them
 	if (GetActorLocation().Z < -20000)
 	{
 		Respawn();
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), GetActorLocation().Z));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Velocity.Z));
 }
 
 // Called to bind functionality to input
@@ -209,6 +230,7 @@ void AFPS_Character::Shoot()
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 		// Decide if shooting with left or right gun
+		
 		if (RightShot)
 		{
 			MuzzleOffset.Y = DualWieldOffset;
@@ -233,7 +255,7 @@ void AFPS_Character::Shoot()
 		FRotator MuzzleRotation = CameraRotation;
 
 		// Skew the aim slightly upwards
-		MuzzleRotation.Pitch += MuzzleAngle;
+		//MuzzleRotation.Pitch += MuzzleAngle;
 
 		UWorld* World = GetWorld();
 
@@ -337,4 +359,15 @@ void AFPS_Character::StartSprinting()
 void AFPS_Character::StopSprinting()
 {
 	Sprint = false;
+}
+
+// Function to apply fall damage
+void AFPS_Character::ApplyFallDamage()
+{
+	Health -= FallDamage;
+	FallDamage = 0;
+	if (Health == 0)
+	{
+		Respawn();
+	}
 }

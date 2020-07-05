@@ -93,9 +93,13 @@ void AFPS_HUD::DrawHUD()
 			Canvas->DrawItem(GemItem);
 		}
 
-		if (Character->CanRead)
+		if (Character->CanRead && WithinSignRange)
 		{
 			DrawSignMessage();
+		}
+		else if (Character->CanRead)
+		{
+			Character->CanRead = false;
 		}
 		else
 		{
@@ -120,11 +124,8 @@ void AFPS_HUD::StopDisplayText()
 // Function to display the sign message
 void AFPS_HUD::DrawSignMessage()
 {
-	if (WithinSignRange)
-	{
-		DisplaySign = true;
-		Character->Reading = true;
-	}
+	DisplaySign = true;
+	Character->Reading = true;
 }
 
 // Function to stop displaying the sign message

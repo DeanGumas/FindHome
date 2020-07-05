@@ -144,12 +144,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	uint8 Gems = 0;
 
-	// Whether the player can read a sign or not
-	bool CanRead = false;
-
-	// Whether or not the character is reading
-	bool Reading = false;
-
 	// Projectile class to spawn when shooting
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ABasicProjectile> ProjectileClass;
@@ -161,6 +155,16 @@ public:
 	// FPS mesh visible only to player
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	USkeletalMeshComponent* FPSMesh;
+
+	// Z Velocity at which the player will experience fall damage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	float FallDamageVelocity;
+
+	// Whether the player can read a sign or not
+	bool CanRead = false;
+
+	// Whether or not the character is reading
+	bool Reading = false;
 
 private:
 	// If the player jump has peaked
@@ -186,5 +190,11 @@ private:
 
 	// Respawn location
 	ARespawnFlag* RespawnLocation;
+
+	// Fall damage to be applied when the character lands
+	uint8 FallDamage = 0;
+
+	// Function to apply fall damage
+	void ApplyFallDamage();
 };
   
