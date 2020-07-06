@@ -32,21 +32,24 @@ void ASign::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Get vector to player and check if within range of the sign
-	ToPlayer = Character->GetActorLocation() - Location;
-	if (IsActive)
+	if (Character)
 	{
-		if (fabs(ToPlayer.X) > Range.X || fabs(ToPlayer.Y) > Range.Y || fabs(ToPlayer.Z) > Range.Z)
+		ToPlayer = Character->GetActorLocation() - Location;
+		if (IsActive)
 		{
-			IsActive = false;
-			HUD->StopDisplayText();
+			if (fabs(ToPlayer.X) > Range.X || fabs(ToPlayer.Y) > Range.Y || fabs(ToPlayer.Z) > Range.Z)
+			{
+				IsActive = false;
+				HUD->StopDisplayText();
+			}
 		}
-	}
-	else
-	{
-		if (!IsActive && fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+		else
 		{
-			IsActive = true;
-			HUD->DisplayText(Message);
+			if (!IsActive && fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+			{
+				IsActive = true;
+				HUD->DisplayText(Message);
+			}
 		}
 	}
 }

@@ -229,8 +229,7 @@ void AFPS_Character::Shoot()
 		FRotator CameraRotation;
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-		// Decide if shooting with left or right gun
-		
+		// Decide if shooting with left or right gun and determine lateral offset accordingly
 		if (RightShot)
 		{
 			MuzzleOffset.Y = DualWieldOffset;
@@ -250,9 +249,20 @@ void AFPS_Character::Shoot()
 			}
 		}
 
-		// Transform MuzzleOffset from camera space to world space
-		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		// Get Muzzle rotation
 		FRotator MuzzleRotation = CameraRotation;
+
+		// Get offset adjusted based on pitch
+		FVector AdjustedOffset = MuzzleOffset;
+		float Pitch = MuzzleRotation.Pitch;
+		if (Pitch > 90)
+		{
+			Pitch = 360 - Pitch;
+		}
+		AdjustedOffset.Z -= (3 * Pitch / 4);
+
+		// Transform MuzzleOffset from camera space to world space
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(AdjustedOffset);
 
 		// Skew the aim slightly upwards
 		//MuzzleRotation.Pitch += MuzzleAngle;

@@ -32,13 +32,16 @@ void AGem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Get vector from gem to player character
-	ToPlayer = Character->GetActorLocation() - GetActorLocation();
-
-	// Check if the character is within range to collect it
-	if (fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+	if (Character)
 	{
-		Character->GetGem();
-		Destroy();
+		ToPlayer = Character->GetActorLocation() - GetActorLocation();
+
+		// Check if the character is within range to collect it
+		if (fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+		{
+			Character->GetGem();
+			Destroy();
+		}
 	}
 
 	// Increase and decrease brightness as needed to make it appear like a beacon

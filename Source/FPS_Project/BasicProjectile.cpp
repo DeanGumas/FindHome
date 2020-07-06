@@ -25,8 +25,8 @@ ABasicProjectile::ABasicProjectile()
 	// Set projectile movement constants
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-	ProjectileMovementComponent->InitialSpeed = 3000.0f;
-	ProjectileMovementComponent->MaxSpeed = 3000.0f;
+	ProjectileMovementComponent->InitialSpeed = Velocity;
+	ProjectileMovementComponent->MaxSpeed = Velocity;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;

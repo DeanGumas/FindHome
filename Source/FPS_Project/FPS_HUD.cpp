@@ -47,63 +47,66 @@ void AFPS_HUD::DrawHUD()
 			Canvas->DrawItem(TileItem);
 		}
 
-		// Draw the hearts in the top left corner
-		if (Character->Health == 3)
+		if (Character)
 		{
-			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
-			HeartItem1.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem1);
+			// Draw the hearts in the top left corner
+			if (Character->Health == 3)
+			{
+				FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+				HeartItem1.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem1);
 
-			FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
-			HeartItem2.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem2);
+				FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
+				HeartItem2.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem2);
 
-			FCanvasTileItem HeartItem3(HeartDrawPosition3, HeartTexture->Resource, FLinearColor::White);
-			HeartItem3.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem3);
-		}
-		else if (Character->Health == 2)
-		{
-			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
-			HeartItem1.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem1);
+				FCanvasTileItem HeartItem3(HeartDrawPosition3, HeartTexture->Resource, FLinearColor::White);
+				HeartItem3.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem3);
+			}
+			else if (Character->Health == 2)
+			{
+				FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+				HeartItem1.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem1);
 
-			FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
-			HeartItem2.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem2);
-		}
-		else if (Character->Health == 1)
-		{
-			FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
-			HeartItem1.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(HeartItem1);
-		}
+				FCanvasTileItem HeartItem2(HeartDrawPosition2, HeartTexture->Resource, FLinearColor::White);
+				HeartItem2.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem2);
+			}
+			else if (Character->Health == 1)
+			{
+				FCanvasTileItem HeartItem1(HeartDrawPosition1, HeartTexture->Resource, FLinearColor::White);
+				HeartItem1.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(HeartItem1);
+			}
 
-		// Draw gems at bottom left
-		if (Character->Gems >= 1)
-		{
-			FCanvasTileItem GemItem(GemDrawPosition, GemFullTexture->Resource, FLinearColor::White);
-			GemItem.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(GemItem);
-		}
-		else
-		{
-			FCanvasTileItem GemItem(GemDrawPosition, GemTexture->Resource, FLinearColor::White);
-			GemItem.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(GemItem);
-		}
+			// Draw gems at bottom left
+			if (Character->Gems >= 1)
+			{
+				FCanvasTileItem GemItem(GemDrawPosition, GemFullTexture->Resource, FLinearColor::White);
+				GemItem.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(GemItem);
+			}
+			else
+			{
+				FCanvasTileItem GemItem(GemDrawPosition, GemTexture->Resource, FLinearColor::White);
+				GemItem.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(GemItem);
+			}
 
-		if (Character->CanRead && WithinSignRange)
-		{
-			DrawSignMessage();
-		}
-		else if (Character->CanRead)
-		{
-			Character->CanRead = false;
-		}
-		else
-		{
-			StopDrawSignMessage();
+			if (Character->CanRead && WithinSignRange)
+			{
+				DrawSignMessage();
+			}
+			else if (Character->CanRead)
+			{
+				Character->CanRead = false;
+			}
+			else
+			{
+				StopDrawSignMessage();
+			}
 		}
 	}
 }

@@ -39,11 +39,14 @@ void ARespawnFlag::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Get vector to player and check if within range to change active respawn location
-	ToPlayer = Character->GetActorLocation() - Location;
-	if (!IsActive && fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+	if (Character)
 	{
-		SetActive();
-		Character->SetRespawnLocation(this);
+		ToPlayer = Character->GetActorLocation() - Location;
+		if (!IsActive && fabs(ToPlayer.X) < Range.X && fabs(ToPlayer.Y) < Range.Y && fabs(ToPlayer.Z) < Range.Z)
+		{
+			SetActive();
+			Character->SetRespawnLocation(this);
+		}
 	}
 }
 

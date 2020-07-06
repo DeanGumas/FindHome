@@ -29,17 +29,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Sphere collision component
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	USphereComponent* CollisionComponent;
-
 	// Projectile movement component
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	// Initial velocity of the projectile
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement)
+	float Velocity = 8000.0f;
+
 	// Amount of damage the projectile deals
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	uint8 Damage = 25;
+
+	// Sphere collision component
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	USphereComponent* CollisionComponent;
 
 	// Function to initialize projectile velocity in shooting direction
 	UFUNCTION()
