@@ -42,7 +42,6 @@ AFPS_Character::AFPS_Character()
 void AFPS_Character::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -331,7 +330,7 @@ void AFPS_Character::Respawn()
 	}
 	else
 	{
-		SetActorLocation(FVector(0, 0, 0));
+		SetActorLocation(FVector(0, 0, 112));
 	}
 	GetWorld()->GetAuthGameMode()->ResetLevel();
 }
